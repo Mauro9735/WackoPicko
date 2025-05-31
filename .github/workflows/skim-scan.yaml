@@ -9,7 +9,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Fluid Attacks Skims scan
+      - name: Run Fluid Attacks Skims scan and save report
         run: |
           docker pull docker.io/fluidattacks/skims:latest
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace docker.io/fluidattacks/skims:latest skims scan .
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace docker.io/fluidattacks/skims:latest skims scan . > skims-report.txt
+
+      - name: Upload Skims report
+        uses: actions/upload-artifact@v4
+        with:
+          name: skims-report
+          path: skims-report.txt
